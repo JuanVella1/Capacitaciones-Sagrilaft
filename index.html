@@ -52,10 +52,13 @@ h1{margin:0 0 14px; font-weight:600; letter-spacing:-.02em; line-height:1.15; fo
 .sub{margin:0 0 22px; color:var(--muted)}
 .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px}
 .campo{display:flex; flex-direction:column; font-size:.9rem; font-weight:500}
-.campo input,.campo select{
+.campo input,.campo select,.campo textarea{
   margin-top:6px; padding:11px 12px; font:inherit; font-weight:400; color:var(--ink);
   background:#0b1d33; border:1px solid #3d5b80; border-radius:6px;
 }
+textarea{resize:vertical; line-height:1.5}
+.abierta{margin-bottom:18px}
+.parte{margin:6px 0 14px; font-size:1.1rem; font-weight:600}
 .ayuda{margin-top:5px; font-size:.8rem; font-weight:400; color:var(--muted)}
 .check{display:flex; gap:10px; align-items:flex-start; margin:18px 0; font-size:.88rem; color:var(--muted)}
 .check input{margin-top:4px; width:18px; height:18px; flex:none; accent-color:var(--accent)}
@@ -68,7 +71,7 @@ h1{margin:0 0 14px; font-weight:600; letter-spacing:-.02em; line-height:1.15; fo
 .btn:disabled{opacity:.45; cursor:not-allowed}
 .btn-sec{background:transparent; color:var(--accent); border:1px solid var(--accent)}
 .btn-sec:hover{background:rgba(79,195,247,.12)}
-.ruta:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,h1:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.ruta:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible,h1:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
 h1:focus{outline:none}
 .error{margin:0 0 14px; color:var(--err); font-size:.9rem}
 .video{position:relative; padding-bottom:56.25%; background:#050e1b; border-radius:6px; overflow:hidden}
@@ -106,9 +109,48 @@ const CONFIG = {
     {
       id: "r1", numero: 1,
       titulo: "Planos de cumplimiento: SAGRILAFT en la construcción",
-      duracion: "Menos de 5 minutos",
+      duracion: "Menos de 5 minutos, con preguntas",
       publico: "Áreas de frente de negocio: comercial, compras y gestión humana",
-      pideTelefono: false
+      pideTelefono: false,
+      evaluacion: [
+        { id: "p1", texto: "¿Quién es el principal propietario del riesgo LA/FT y la Primera Línea de Defensa?",
+          opciones: [
+            { id: "A", texto: "El Oficial de Cumplimiento." },
+            { id: "B", texto: "Auditoría Interna." },
+            { id: "C", texto: "Las áreas operativas y comerciales que vinculan al tercero." } ] },
+        { id: "p2", texto: "¿En qué momento debe realizarse obligatoriamente la Debida Diligencia?",
+          opciones: [
+            { id: "A", texto: "Después del primer pago." },
+            { id: "B", texto: "Previo a la vinculación." },
+            { id: "C", texto: "Al finalizar el contrato." } ] },
+        { id: "p3", texto: "Si un proveedor elude entregar información sobre su Beneficiario Final, usted debe:",
+          opciones: [
+            { id: "A", texto: "Vincularlo y pedirla después." },
+            { id: "B", texto: "No iniciar la relación comercial y reportar." },
+            { id: "C", texto: "Ignorarlo si el precio es bueno." } ] },
+        { id: "p4", texto: "Una señal de alerta financiera es:",
+          opciones: [
+            { id: "A", texto: "Negocio coherente con el perfil." },
+            { id: "B", texto: "Capacidad económica que no guarda relación con el contrato." },
+            { id: "C", texto: "Entregar todos los soportes." } ] },
+        { id: "p5", texto: "¿Qué riesgo implica la paralización de operaciones y el bloqueo de cuentas?",
+          opciones: [
+            { id: "A", texto: "Riesgo operativo." },
+            { id: "B", texto: "Riesgo de contagio." },
+            { id: "C", texto: "Riesgo reputacional." } ] },
+        { id: "p6", texto: "Al vincular a un PEP, se debe:",
+          opciones: [
+            { id: "A", texto: "Aplicar debida diligencia intensificada y pedir aprobación de gerencia." },
+            { id: "B", texto: "Omitir los controles por respeto." },
+            { id: "C", texto: "Darle trato preferencial sin formatos." } ] }
+      ],
+      abiertas: {
+        intro: "Tu conocimiento práctico es vital. Responde estas dos preguntas con base en tu experiencia diaria, para fortalecer nuestro SAGRILAFT.",
+        preguntas: [
+          { id: "a1", texto: "Desde tu posición actual y las herramientas que manejas, ¿qué obstáculo principal encuentras al momento de solicitar y verificar la información de un tercero, y cómo crees que la empresa podría facilitar este proceso?" },
+          { id: "a2", texto: "Piensa en el proceso operativo de tu área. ¿Qué control adicional o ajuste sugerirías para garantizar que ninguna persona malintencionada pueda utilizar nuestras transacciones diarias para ocultar el origen de sus recursos?" }
+        ]
+      }
     },
     {
       id: "r2", numero: 2,
@@ -441,6 +483,12 @@ function vEval(r) {
       <legend>${i + 1}. ${esc(q.texto)}</legend>
       ${barajar(q.opciones).map(o => `<label class="op"><input type="radio" name="${q.id}" value="${o.id}"> <span>${esc(o.texto)}</span></label>`).join('')}
     </fieldset>`).join('');
+  const abiertas = r.abiertas ? `
+    <h2 class="parte">Tu perspectiva</h2>
+    <p class="sub">${esc(r.abiertas.intro)}</p>
+    ${r.abiertas.preguntas.map((q, i) => `
+      <label class="campo abierta">${i + 1}. ${esc(q.texto)}
+        <textarea name="${q.id}" rows="4" maxlength="1500" required></textarea></label>`).join('')}` : '';
   $('#vista').innerHTML = `
     <div class="pagina">
       <a class="volver" href="#video-${r.id}">Volver al video</a>
@@ -448,7 +496,9 @@ function vEval(r) {
       <div class="panel">
         <p class="paso">Paso 3 de 3: preguntas</p>
         <form id="f-eval" novalidate>
+          ${r.abiertas ? '<h2 class="parte">Selección múltiple</h2>' : ''}
           ${trivia}
+          ${abiertas}
           <p class="error" id="err-eval" role="alert" hidden></p>
           <button class="btn" type="submit">Enviar mis respuestas</button>
         </form>
@@ -460,13 +510,22 @@ function vEval(r) {
 async function evaluar(e, r) {
   e.preventDefault();
   const d = new FormData(e.target), err = $('#err-eval'), btn = e.target.querySelector('button');
-  const respuestas = {};
-  let faltan = false;
+  const respuestas = {}, abiertas = {};
+  let faltan = false, cortas = false;
   r.evaluacion.forEach(q => { const v = d.get(q.id); if (!v) faltan = true; respuestas[q.id] = v; });
-  if (faltan) { err.textContent = 'Responde todas las preguntas antes de enviar.'; err.hidden = false; return; }
+  if (r.abiertas) r.abiertas.preguntas.forEach(q => {
+    const v = (d.get(q.id) || '').trim();
+    if (v.length < 10) cortas = true;
+    abiertas[q.id] = v;
+  });
+  if (faltan || cortas) {
+    err.textContent = faltan ? 'Responde todas las preguntas de selección antes de enviar.'
+                             : 'Escribe una respuesta de al menos 10 caracteres en cada pregunta abierta.';
+    err.hidden = false; return;
+  }
   err.hidden = true;
   btn.disabled = true; btn.textContent = 'Guardando en el sistema…';
-  const ok = await enviar(paquete('evaluacion', r, { respuestas }));
+  const ok = await enviar(paquete('evaluacion', r, { respuestas, abiertas }));
   if (!ok) {
     btn.disabled = false; btn.textContent = 'Enviar mis respuestas';
     err.textContent = 'No pudimos guardar tus respuestas. Revisa tu conexión e inténtalo de nuevo.'; err.hidden = false;
