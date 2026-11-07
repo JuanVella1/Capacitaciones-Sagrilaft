@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<title>Portal de capacitaciones</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1a2f; --panel:#102640; --panel-2:#153453; --line:#2a4568; --grid:#0f2744;
+  --ink:#e8f0fa; --muted:#9db1ca; --accent:#4fc3f7; --focus:#ffd166; --ok:#5fd39a; --err:#ff8a80;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; min-height:100vh; display:flex; flex-direction:column; color:var(--ink); color-scheme:dark;
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.6;
+}
+a{color:var(--accent)}
+.wrap{width:100%; max-width:960px; margin:0 auto; padding:0 20px}
+.bar{border-bottom:1px solid var(--line); background:rgba(10,26,47,.92)}
+.bar .wrap{padding-top:14px; padding-bottom:14px}
+.firm{color:var(--ink); text-decoration:none; font-weight:600; font-size:.95rem; border-left:4px solid var(--accent); padding-left:12px}
+main{flex:1}
+h1{margin:0 0 14px; font-weight:600; letter-spacing:-.02em; line-height:1.15; font-size:clamp(1.6rem,4.5vw,2.2rem)}
+.hero{padding:56px 0 34px}
+.hero h1{font-size:clamp(2.1rem,6vw,3.3rem); line-height:1.08}
+.lead{margin:0; color:var(--muted); max-width:58ch}
+.rutas{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:48px}
+.ruta{
+  display:flex; flex-direction:column; gap:8px; min-height:250px; padding:22px 20px; text-align:left;
+  font:inherit; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; cursor:pointer;
+}
+.ruta:hover{border-color:var(--accent); background:var(--panel-2)}
+.ruta-n{font-size:.85rem; font-weight:600; color:var(--accent)}
+.ruta-t{font-size:1.18rem; font-weight:600; line-height:1.3}
+.ruta-d,.ruta-p{font-size:.88rem; color:var(--muted)}
+.ruta-go{margin-top:auto; padding-top:14px; font-weight:600; color:var(--accent)}
+.pagina{max-width:760px; margin:0 auto; padding:34px 0 48px}
+.volver{display:inline-block; margin-bottom:18px; font-size:.9rem; color:var(--muted)}
+.volver:hover{color:var(--ink)}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:clamp(18px,4vw,30px)}
+.paso{margin:0 0 16px; font-size:.9rem; font-weight:600; color:var(--accent)}
+.sub{margin:0 0 22px; color:var(--muted)}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px}
+.campo{display:flex; flex-direction:column; font-size:.9rem; font-weight:500}
+.campo input,.campo select{
+  margin-top:6px; padding:11px 12px; font:inherit; font-weight:400; color:var(--ink);
+  background:#0b1d33; border:1px solid #3d5b80; border-radius:6px;
+}
+.ayuda{margin-top:5px; font-size:.8rem; font-weight:400; color:var(--muted)}
+.check{display:flex; gap:10px; align-items:flex-start; margin:18px 0; font-size:.88rem; color:var(--muted)}
+.check input{margin-top:4px; width:18px; height:18px; flex:none; accent-color:var(--accent)}
+.trampa{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+.btn{
+  display:inline-block; font:inherit; font-weight:600; text-decoration:none; color:#06182b; background:var(--accent);
+  border:0; border-radius:6px; padding:12px 24px; cursor:pointer;
+}
+.btn:hover{background:#7ad4fa}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.btn-sec{background:transparent; color:var(--accent); border:1px solid var(--accent)}
+.btn-sec:hover{background:rgba(79,195,247,.12)}
+.ruta:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,h1:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+h1:focus{outline:none}
+.error{margin:0 0 14px; color:var(--err); font-size:.9rem}
+.video{position:relative; padding-bottom:56.25%; background:#050e1b; border-radius:6px; overflow:hidden}
+.video iframe,.video-demo{position:absolute; inset:0; width:100%; height:100%; border:0}
+.video-demo{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; text-align:center; color:var(--muted)}
+.estado{margin:12px 0 18px; font-size:.9rem; color:var(--muted)}
+fieldset{margin:0 0 16px; padding:14px 18px 8px; border:1px solid var(--line); border-radius:6px}
+legend{padding:0 6px; font-weight:600}
+.op{display:flex; gap:10px; align-items:flex-start; padding:8px 0; cursor:pointer}
+.op input{margin-top:5px; width:18px; height:18px; flex:none; accent-color:var(--accent)}
+.exito{margin:0 0 24px; padding:16px 20px; background:rgba(95,211,154,.1); border-left:4px solid var(--ok)}
+.exito h2{margin:0 0 6px; font-size:1.15rem; color:var(--ok)}
+.exito p{margin:0}
+footer{padding:22px 0 34px; font-size:.85rem; color:var(--muted); border-top:1px solid var(--line)}
+@media (max-width:760px){
+  .rutas{grid-template-columns:1fr}
+  .ruta{min-height:0}
+  .grid{grid-template-columns:1fr}
+  .hero{padding-top:36px}
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap"><a class="firm" id="firma-top" href="#inicio"></a></div></header>
+<main class="wrap" id="vista"></main>
+<footer><div class="wrap"><p id="firma-pie" style="margin:0"></p></div></footer>
+
+<script>
+/* ============ CONFIGURACIÓN: reemplaza solo esta sección ============ */
+const CONFIG = {
+  firma: "L&M Consultores Comerciales SAS",
+  endpoint: "https://script.google.com/macros/s/AKfycbyQG8r8UMnzFckR1-D2ccw9sjFPoMou7J9OT456p9nBqp7DqfBFg-Gf5uuo5N_pIGNb8A/exec",          // URL de la aplicación web de Apps Script
+  entidades: ["Inversiones Alcabama SA", "Ámbar SAS", "Ankara SAS", "Terra 360 SAS"],
+  rutas: [
+    {
+      id: "r1", numero: 1,
+      titulo: "Planos de cumplimiento: SAGRILAFT en la construcción",
+      duracion: "Menos de 5 minutos",
+      publico: "Áreas de frente de negocio: comercial, compras y gestión humana",
+      pideTelefono: false
+    },
+    {
+      id: "r2", numero: 2,
+      titulo: "Radiografía de la transparencia y ética empresarial",
+      duracion: "Unos 4 minutos",
+      publico: "Nuevos colaboradores",
+      pideTelefono: false
+    },
+    {
+      id: "r3", numero: 3,
+      titulo: "SAGRILAFT interactiva para trabajadores de obra",
+      duracion: "Unos 5 minutos, con trivia",
+      publico: "Todos los colaboradores y nuevos empleados",
+      pideTelefono: true,
+      evaluacion: [
+        { id: "p1", texto: "¿Qué debes hacer si un cliente o proveedor se niega a justificar el origen de sus fondos?",
+          opciones: [
+            { id: "A", texto: "Ignorarlo y acelerar la firma del contrato." },
+            { id: "B", texto: "Informar de inmediato al Oficial de Cumplimiento o al Canal Ético." },
+            { id: "C", texto: "Ofrecerle prestar tu cuenta personal." } ] },
+        { id: "p2", texto: "¿Quién es la persona responsable en la empresa de evaluar alertas y reportar a la UIAF?",
+          opciones: [
+            { id: "A", texto: "El Oficial de Cumplimiento designado." },
+            { id: "B", texto: "Cualquier cliente externo de la compañía." },
+            { id: "C", texto: "Un usuario anónimo en redes sociales." } ] }
+      ]
+    }
+  ]
+};
+/* ===================================================================== */
+
+const $ = (s, e = document) => e.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const suave = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+/* ---------- Estado (se conserva mientras la pestaña esté abierta) ---------- */
+const KEY = 'portal-capacitacion-v2';
+const estado = {};
+CONFIG.rutas.forEach(r => estado[r.id] = { acceso: false, expira: 0, token: '', videoId: '', registrado: false, completado: false, evaluado: false });
+let usuario = { nombre: '', correo: '', telefono: '', entidad: '' };
+try {
+  const g = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+  if (g) { Object.assign(estado, g.estado || {}); Object.assign(usuario, g.usuario || {}); }
+} catch (e) {}
+function guardar() { try { sessionStorage.setItem(KEY, JSON.stringify({ estado, usuario })); } catch (e) {} }
+
+let player = null;
+const terminada = r => estado[r.id].completado && (!r.evaluacion || estado[r.id].evaluado);
+const orden = { acceso: 0, registro: 1, video: 2, evaluacion: 3, fin: 4 };
+const conAcceso = s => s.acceso && Date.now() < s.expira;
+
+function siguientePaso(r) {
+  const s = estado[r.id];
+  if (!conAcceso(s)) return 'acceso-' + r.id;
+  if (!s.registrado) return 'registro-' + r.id;
+  if (!s.completado) return 'video-' + r.id;
+  if (r.evaluacion && !s.evaluado) return 'evaluacion-' + r.id;
+  return 'fin-' + r.id;
+}
+function ir(h, reemplazar) {
+  if (reemplazar) location.replace('#' + h); else location.hash = h;
+}
+
+document.title = "Portal de capacitaciones | " + CONFIG.firma;
+$('#firma-top').textContent = CONFIG.firma;
+$('#firma-pie').textContent = "Capacitación realizada por " + CONFIG.firma + ".";
+
+/* ---------- Envío al Apps Script ---------- */
+function paquete(accion, r, extra = {}) {
+  return Object.assign({
+    accion, ruta: r.id, rutaNombre: r.titulo, videoId: estado[r.id].videoId, videoTitulo: r.titulo, token: estado[r.id].token,
+    fecha: new Date().toISOString(),
+    nombre: usuario.nombre, correo: usuario.correo, telefono: usuario.telefono,
+    entidad: usuario.entidad, firma: CONFIG.firma
+  }, extra);
+}
+async function enviar(datos) {
+  if (/^PEGAR/.test(CONFIG.endpoint)) {           // modo prueba: aún no hay backend
+    console.info('[modo prueba] datos que se enviarían:', datos);
+    await new Promise(ok => setTimeout(ok, 700));
+    return true;
+  }
+  try {
+    await fetch(CONFIG.endpoint, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(datos)
+    });
+    return true;
+  } catch (e) { return false; }
+}
+
+async function consultar(datos) {                  // a diferencia de enviar(), esta lee la respuesta del servidor
+  if (/^PEGAR/.test(CONFIG.endpoint)) return { ok: false, error: 'red' };
+  try {
+    const res = await fetch(CONFIG.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(datos)
+    });
+    return await res.json();
+  } catch (e) { return { ok: false, error: 'red' }; }
+}
+
+/* ---------- Navegación entre páginas (por #hash) ---------- */
+function destruirPlayer() {
+  if (player && player.destroy) { try { player.destroy(); } catch (e) {} }
+  player = null;
+}
+function render() {
+  destruirPlayer();
+  const [vista, rid] = (location.hash.slice(1) || 'inicio').split('-');
+  const r = CONFIG.rutas.find(x => x.id === rid);
+  if (r && vista in orden) {
+    const ideal = siguientePaso(r);
+    if (orden[vista] > orden[ideal.split('-')[0]] ||
+        (vista === 'acceso' && conAcceso(estado[r.id])) ||
+        (vista === 'registro' && estado[r.id].registrado) ||
+        (vista === 'evaluacion' && !r.evaluacion)) { ir(ideal, true); return; }
+  }
+  if (r && vista === 'acceso') vAcceso(r);
+  else if (r && vista === 'registro') vRegistro(r);
+  else if (r && vista === 'video') vVideo(r);
+  else if (r && vista === 'evaluacion') vEval(r);
+  else if (r && vista === 'fin') vFin(r);
+  else vInicio();
+  const h = $('#vista h1');
+  if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', render);
+
+/* ---------- Página 1: inicio con las tres rutas ---------- */
+function vInicio() {
+  $('#vista').innerHTML = `
+    <section class="hero">
+      <h1>Portal de capacitaciones</h1>
+      <p class="lead">Elige la ruta que te corresponde. Cada ruta tiene su propia contraseña, que te entrega ${esc(CONFIG.firma)}. Después te pediremos tus datos, verás el video y, si aplica, responderás unas preguntas.</p>
+    </section>
+    <nav class="rutas" aria-label="Rutas de capacitación">
+      ${CONFIG.rutas.map(r => `
+        <button class="ruta" type="button" data-id="${r.id}">
+          <span class="ruta-n">Ruta ${r.numero}${terminada(r) ? ' (completada)' : ''}</span>
+          <span class="ruta-t">${esc(r.titulo)}</span>
+          <span class="ruta-d">${esc(r.duracion)}</span>
+          <span class="ruta-p">Dirigida a: ${esc(r.publico)}</span>
+          <span class="ruta-d">Acceso con contraseña</span>
+          <span class="ruta-go">${terminada(r) ? 'Ver resumen' : estado[r.id].registrado ? 'Continuar' : 'Comenzar'}</span>
+        </button>`).join('')}
+    </nav>`;
+  document.querySelectorAll('.ruta').forEach(b => {
+    b.onclick = () => ir(siguientePaso(CONFIG.rutas.find(r => r.id === b.dataset.id)));
+  });
+}
+
+/* ---------- Página de acceso con contraseña ---------- */
+function vAcceso(r) {
+  $('#vista').innerHTML = `
+    <div class="pagina">
+      <a class="volver" href="#inicio">Volver al inicio</a>
+      <h1>${esc(r.titulo)}</h1>
+      <div class="panel">
+        <p class="paso">Acceso restringido</p>
+        <p class="sub">Escribe la contraseña de esta ruta. Te la entregó ${esc(CONFIG.firma)}.</p>
+        <form id="f-acc" novalidate>
+          <label class="campo">Contraseña
+            <input name="clave" type="password" autocomplete="off" required></label>
+          <label class="check"><input type="checkbox" id="ver-clave"><span>Mostrar contraseña</span></label>
+          <p class="error" id="err-acc" role="alert" hidden></p>
+          <button class="btn" type="submit">Entrar</button>
+        </form>
+      </div>
+    </div>`;
+  $('#ver-clave').onchange = e => { $('#f-acc input[name="clave"]').type = e.target.checked ? 'text' : 'password'; };
+  $('#f-acc').addEventListener('submit', e => acceder(e, r));
+}
+
+async function acceder(e, r) {
+  e.preventDefault();
+  const clave = (new FormData(e.target).get('clave') || '').trim();
+  const err = $('#err-acc'), btn = e.target.querySelector('button');
+  if (!clave) { err.textContent = 'Escribe la contraseña.'; err.hidden = false; return; }
+  err.hidden = true; btn.disabled = true; btn.textContent = 'Verificando…';
+  const res = await consultar({ accion: 'acceso', ruta: r.id, clave });
+  if (res && res.ok) {
+    Object.assign(estado[r.id], { acceso: true, token: res.token, videoId: res.videoId, expira: res.exp });
+    guardar();
+    ir(siguientePaso(r));
+    return;
+  }
+  btn.disabled = false; btn.textContent = 'Entrar';
+  err.textContent = res && res.error === 'bloqueado' ? 'Demasiados intentos. Espera 10 minutos e inténtalo de nuevo.'
+    : res && res.error === 'red' ? 'No pudimos verificar la contraseña. Revisa tu conexión e inténtalo de nuevo.'
+    : 'Contraseña incorrecta.';
+  err.hidden = false;
+}
+
+/* ---------- Página 2: registro de datos ---------- */
+function vRegistro(r) {
+  const total = r.evaluacion ? 3 : 2;
+  const opciones = CONFIG.entidades.map(e =>
+    `<option value="${esc(e)}"${usuario.entidad === e ? ' selected' : ''}>${esc(e)}</option>`).join('');
+  $('#vista').innerHTML = `
+    <div class="pagina">
+      <a class="volver" href="#inicio">Volver al inicio</a>
+      <h1>${esc(r.titulo)}</h1>
+      <div class="panel">
+        <p class="paso">Paso 1 de ${total}: tus datos</p>
+        <p class="sub">Registramos tu participación para dejar constancia de la capacitación.</p>
+        <form id="f-reg" novalidate>
+          <div class="grid">
+            <label class="campo">Nombre completo
+              <input name="nombre" autocomplete="name" required value="${esc(usuario.nombre)}"></label>
+            <label class="campo">Correo electrónico
+              <input name="correo" type="email" autocomplete="email" required value="${esc(usuario.correo)}">
+              <span class="ayuda">Te enviaremos el enlace del video a este correo.</span></label>
+            <label class="campo">Entidad
+              <select name="entidad" required><option value="">Selecciona tu entidad</option>${opciones}</select></label>
+            ${r.pideTelefono ? `<label class="campo">Teléfono o celular
+              <input name="telefono" type="tel" inputmode="tel" autocomplete="tel" required value="${esc(usuario.telefono)}"></label>` : ''}
+          </div>
+          <div class="trampa" aria-hidden="true"><label>No llenar este campo<input name="sitio_web" tabindex="-1" autocomplete="off"></label></div>
+          <label class="check"><input type="checkbox" name="consent" required>
+            <span>Autorizo el tratamiento de mis datos personales para registrar mi participación en esta capacitación.</span></label>
+          <p class="error" id="err-reg" role="alert" hidden></p>
+          <button class="btn" type="submit">Registrarme y ver el video</button>
+        </form>
+      </div>
+    </div>`;
+  $('#f-reg').addEventListener('submit', e => registrar(e, r));
+}
+
+async function registrar(e, r) {
+  e.preventDefault();
+  const d = new FormData(e.target), err = $('#err-reg'), btn = e.target.querySelector('button');
+  const v = {
+    nombre: (d.get('nombre') || '').trim(), correo: (d.get('correo') || '').trim(),
+    entidad: d.get('entidad') || '', telefono: (d.get('telefono') || '').trim()
+  };
+  let msg = '';
+  if (v.nombre.length < 5 || !/\s/.test(v.nombre)) msg = 'Escribe tu nombre completo.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.correo)) msg = 'Escribe un correo válido, por ejemplo nombre@empresa.com.';
+  else if (!v.entidad) msg = 'Selecciona tu entidad.';
+  else if (r.pideTelefono && v.telefono.replace(/\D/g, '').length < 7) msg = 'Escribe un teléfono de al menos 7 dígitos.';
+  else if (!d.get('consent')) msg = 'Debes autorizar el tratamiento de datos para continuar.';
+  if (msg) { err.textContent = msg; err.hidden = false; return; }
+  err.hidden = true;
+
+  btn.disabled = true; btn.textContent = 'Guardando en el sistema…';
+  usuario = v;
+  const ok = d.get('sitio_web') ? true : await enviar(paquete('registro', r));
+  if (!ok) {
+    btn.disabled = false; btn.textContent = 'Registrarme y ver el video';
+    err.textContent = 'No pudimos guardar tus datos. Revisa tu conexión e inténtalo de nuevo.'; err.hidden = false;
+    return;
+  }
+  estado[r.id].registrado = true;
+  guardar();
+  ir('video-' + r.id);
+}
+
+/* ---------- Página 3: video ---------- */
+function vVideo(r) {
+  const s = estado[r.id], total = r.evaluacion ? 3 : 2;
+  const sig = r.evaluacion && !s.evaluado ? 'Siguiente: responder las preguntas' : 'Siguiente: finalizar';
+  $('#vista').innerHTML = `
+    <div class="pagina">
+      <a class="volver" href="#inicio">Volver al inicio</a>
+      <h1>${esc(r.titulo)}</h1>
+      <div class="panel">
+        <p class="paso">Paso 2 de ${total}: mira el video completo</p>
+        <div class="video"><div id="player"></div></div>
+        <p class="estado" id="estado-video">${s.completado ? 'Video completado. Quedó registrado.' : 'El botón “Siguiente” se activa cuando el video termine.'}</p>
+        <button class="btn" type="button" id="b-sig"${s.completado ? '' : ' disabled'}>${sig}</button>
+      </div>
+    </div>`;
+  $('#b-sig').onclick = () => ir(siguientePaso(r));
+  montarVideo(r);
+}
+
+let cola = [];
+function cargarYT(cb) {
+  if (window.YT && window.YT.Player) { cb(); return; }
+  cola.push(cb);
+  if (!document.getElementById('yt-api')) {
+    const s = document.createElement('script');
+    s.id = 'yt-api'; s.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+  }
+}
+window.onYouTubeIframeAPIReady = () => cola.splice(0).forEach(f => f());
+
+function montarVideo(r) {
+  const vid = estado[r.id].videoId;
+  if (!vid || /^PEGAR/.test(vid)) {
+    $('.video').innerHTML = '<div class="video-demo"><p>El video de esta ruta aún no está configurado.</p>' +
+      '<button class="btn btn-sec" type="button" id="b-demo">Marcar como visto (modo prueba)</button></div>';
+    $('#b-demo').onclick = () => completar(r);
+    return;
+  }
+  cargarYT(() => {
+    if (location.hash !== '#video-' + r.id || !$('#player') || player) return;
+    player = new YT.Player('player', {
+      videoId: vid,
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onStateChange: ev => { if (ev.data === 0) completar(r); },
+        onError: () => { const e = $('#estado-video'); if (e) e.textContent = 'No pudimos cargar el video. Recarga la página o prueba desde otra red.'; }
+      }
+    });
+  });
+}
+
+function completar(r) {
+  const s = estado[r.id];
+  if (!s.completado) {
+    s.completado = true; guardar();
+    enviar(paquete('completo', r));               // queda registrado qué video vio la persona
+  }
+  const b = $('#b-sig'); if (b) b.disabled = false;
+  const e = $('#estado-video'); if (e) e.textContent = 'Video completado. Quedó registrado.';
+}
+
+/* ---------- Página 4: preguntas (solo rutas que las tengan) ---------- */
+function barajar(a) { return a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(p => p[1]); }
+
+function vEval(r) {
+  const trivia = r.evaluacion.map((q, i) => `
+    <fieldset>
+      <legend>${i + 1}. ${esc(q.texto)}</legend>
+      ${barajar(q.opciones).map(o => `<label class="op"><input type="radio" name="${q.id}" value="${o.id}"> <span>${esc(o.texto)}</span></label>`).join('')}
+    </fieldset>`).join('');
+  $('#vista').innerHTML = `
+    <div class="pagina">
+      <a class="volver" href="#video-${r.id}">Volver al video</a>
+      <h1>${esc(r.titulo)}</h1>
+      <div class="panel">
+        <p class="paso">Paso 3 de 3: preguntas</p>
+        <form id="f-eval" novalidate>
+          ${trivia}
+          <p class="error" id="err-eval" role="alert" hidden></p>
+          <button class="btn" type="submit">Enviar mis respuestas</button>
+        </form>
+      </div>
+    </div>`;
+  $('#f-eval').addEventListener('submit', e => evaluar(e, r));
+}
+
+async function evaluar(e, r) {
+  e.preventDefault();
+  const d = new FormData(e.target), err = $('#err-eval'), btn = e.target.querySelector('button');
+  const respuestas = {};
+  let faltan = false;
+  r.evaluacion.forEach(q => { const v = d.get(q.id); if (!v) faltan = true; respuestas[q.id] = v; });
+  if (faltan) { err.textContent = 'Responde todas las preguntas antes de enviar.'; err.hidden = false; return; }
+  err.hidden = true;
+  btn.disabled = true; btn.textContent = 'Guardando en el sistema…';
+  const ok = await enviar(paquete('evaluacion', r, { respuestas }));
+  if (!ok) {
+    btn.disabled = false; btn.textContent = 'Enviar mis respuestas';
+    err.textContent = 'No pudimos guardar tus respuestas. Revisa tu conexión e inténtalo de nuevo.'; err.hidden = false;
+    return;
+  }
+  estado[r.id].evaluado = true; guardar();
+  ir('fin-' + r.id);
+}
+
+/* ---------- Página final ---------- */
+function vFin(r) {
+  $('#vista').innerHTML = `
+    <div class="pagina">
+      <h1>${esc(r.titulo)}</h1>
+      <div class="exito" id="mensajeExito" role="status">
+        <h2>Capacitación completada</h2>
+        <p id="msg-final"></p>
+      </div>
+      <a class="btn" href="#inicio">Elegir otra ruta</a>
+    </div>`;
+  $('#msg-final').textContent = usuario.nombre + ", registramos que completaste “" + r.titulo + "”. " +
+    (r.evaluacion ? "Recibimos tus respuestas. " : "") + "Capacitación realizada por " + CONFIG.firma + ".";
+}
+
+render();
+</script>
+</body>
+</html>
